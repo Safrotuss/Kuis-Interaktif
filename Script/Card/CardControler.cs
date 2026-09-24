@@ -11,42 +11,38 @@ public class CardController : MonoBehaviour
         
         if (tombolUIKartu != null)
         {
+            // Menghubungkan klik Button UI ke fungsi eksekusi
             tombolUIKartu.onClick.AddListener(KartuDiklikViaUI);
         }
     }
 
-    // KARTU 2D (SISTEM DRAG & DROP / LEPAS MOUSE)
-    // otomatis berjalan saat klik kiri mouse dilepas dari objek
+    // Deteksi klik mouse untuk objek kartu
     private void OnMouseUp()
     {
         KirimDataKartuKeManager();
     }
 
-    // KARTU CANVAS UI (SISTEM KLIK TOMBOL BIASA)
     private void KartuDiklikViaUI()
     {
         KirimDataKartuKeManager();
     }
 
-    // FUNGSI INTI PENGIRIM DATA (SUPER AMAN & ANTI-SALAH SASARAN)
     private void KirimDataKartuKeManager()
     {
+        // cari QuizManager di dalam scene
         QuizManager quiz = Object.FindFirstObjectByType<QuizManager>();
 
         if (quiz != null)
         {
-            // PENGAMAN UTAMA: Ambil objek tertinggi dari susunan kartu ini.
-            // Ini mencegah script mengirim nama objek anak (seperti teks/gambar bayangan).
+            // Ambil root parent kartu (jika prefab kartu merupakan anak dari objek lain)
             GameObject objekUtamaKartu = transform.root.gameObject;
 
-            // Jaga-jaga jika menggunakan Canvas besar dan transform.root malah mengambil objek Canvas Utama,
-            // kita alihkan untuk mengambil objek game object ini sendiri sebagai perwakilan teratas kartu.
             if (objekUtamaKartu.GetComponent<Canvas>() != null)
             {
                 objekUtamaKartu = this.gameObject;
             }
             
-            // Kirim objek utama kartu yang sudah dipastikan bersih namanya ke QuizManager
+            // Kirim objek kartu ke QuizManager untuk validasi jawaban
             quiz.CekJawabanKartu(objekUtamaKartu);
         }
         else {

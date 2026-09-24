@@ -55,6 +55,7 @@ public class EnemyHealth : MonoBehaviour
         if (AttackSFX != null && sfxSource != null) sfxSource.PlayOneShot(AttackSFX);
     }
 
+    // Mengurangi HP, memperbarui HealthBar, spawn VFX kena pukul, dan nge-shake sprite via DOTween
     public void TakeDamage(int damage)
     {
         if (isDead) return;
@@ -66,11 +67,8 @@ public class EnemyHealth : MonoBehaviour
 
         if (hitEffectPrefab != null)
         {
-            // Spawn prefab efek tepat di posisi koordinat Player saat ini
+             // Spawn prefab efek tepat di posisi koordinat Player saat ini
             GameObject efekTerbuat = Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
-
-            // Pengaman: Hapus objek efek tersebut dari memori game setelah beberapa detik 
-            // agar clone-nya tidak menumpuk di Hierarchy dan bikin game lag!
             Destroy(efekTerbuat, durasiEfekHidup);
         }
    
@@ -79,6 +77,7 @@ public class EnemyHealth : MonoBehaviour
         if (currentHp <= 0) Die();
     }
 
+    // Jeda delay sebelum nampilin panel game over melalui animasi Pop-Up (DOScale)
     private IEnumerator ShowSelectedGameOverPanel()
     {
         yield return new WaitForSeconds(2.0f);
@@ -90,6 +89,7 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
+    // Nambahin HP karakter dan nge-clamp biar gak melewati maxHp
     public void Heal(int amount)
     {
         if (isDead) return;
@@ -98,6 +98,7 @@ public class EnemyHealth : MonoBehaviour
         if (healthBar != null) healthBar.SetValue(currentHp, maxHp);
     }
 
+    // Saat HP habis UI Quiz dan movement dimatikan, dan panggil animasi mati
     private void Die()
     {
         if (isDead) return;

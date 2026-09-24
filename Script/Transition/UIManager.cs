@@ -7,41 +7,44 @@ using UnityEngine.EventSystems;
 public class UIManager : MonoBehaviour
 {
     [Header("Referensi UI Utama")]
-    public GameObject panelUtama; // Panel yang biasanya muncul pertama (misal: HUD)
+    public GameObject panelUtama;
 
     [SerializeField] private Health playerHealth;
 
-    [Header("Audio Settings (Biar Aman Pindah Scene)")]
-    [Tooltip("Beri jeda waktu (detik) agar suara klik selesai berbunyi sebelum scene berganti.")]
-    [SerializeField] private float jedaPindahScene = 0.25f; 
+    [Header("Audio Settings")]
+    [Tooltip("Beri jeda waktu (detik) agar SFX klik tidak terpotong")]
+    [SerializeField] private float delayPindah = 0.25f; 
 
+    // Button UI untuk ganti scene
     public void PindahScene(string namaScene)
     {
-        Time.timeScale = 1f; 
-        StartCoroutine(ProsesPindahSceneDenganJeda(namaScene));
+        Time.timeScale = 1f; // Pastikan waktu game berjalan normal sebelum pindah
+        StartCoroutine(ProsesPindah(namaScene));
     }
 
-    private IEnumerator ProsesPindahSceneDenganJeda(string namaScene)
+    // untuk memberi jeda sebentar sebelum scene benar-benar dimuat
+    private IEnumerator ProsesPindah(string namaScene)
     {
-        yield return new WaitForSeconds(jedaPindahScene);
+        yield return new WaitForSeconds(delayPindah);
         SceneManager.LoadScene(namaScene);
     }
 
-    // MEMUNCULKAN PANEL (Sambil Freeze Game untuk Pause menu)
+    // Membuka panel UI sekaligus mempause/mefreeze game
     public void MunculkanPanel(GameObject panelYangMauBuka)
     {
         if (panelYangMauBuka != null)
         {
+            // Jangan buka panel jika player sudah mati
             if (playerHealth != null && playerHealth.isDead)
             {
                 return; 
             }
             panelYangMauBuka.SetActive(true);
-            Time.timeScale = 0f;
+            Time.timeScale = 0f; // Freeze pergerakan/waktu di dalam game
         }
     }
 
-    // MEMUNCULKAN PANEL (Tanpa Freeze Game)
+    // Membuka panel UI tanpa mempause game
     public void MunculkanPanel2 (GameObject panelYangMauBuka)
     {
         if (panelYangMauBuka != null)
@@ -53,7 +56,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // MENYEMBUNYIKAN PANEL 
+    // Menutup panel UI dengan sedikit delay (biar animasi/SFX tombol selesai dulu)
     public void SembunyikanPanel(GameObject panelYangMauTutup)
     {
         if (panelYangMauTutup != null)
@@ -62,9 +65,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // penutupan panel dengan waktu real-time (tetap jalan meski game di-pause)
     private IEnumerator ProsesSembunyikanPanel(GameObject panelYangMauTutup)
     {
-        // Beri jeda 0.15 detik realtime agar SFX tombol close sempat berbunyi
+        // Gunakan WaitForSecondsRealtime agar jeda tetap berjalan meskipun Time.timeScale = 0
         yield return new WaitForSecondsRealtime(0.15f);
 
         if (panelYangMauTutup != null)
@@ -72,12 +76,14 @@ public class UIManager : MonoBehaviour
             panelYangMauTutup.SetActive(false);
         }
 
+        // Hapus fokus dari tombol UI agar tidak sengaja tertekan lagi via keyboard/gamepad
         if (EventSystem.current != null)
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
     }
 
+    // Melanjutkan game dari posisi pause (menutup panel & mengembalikan kecepatan waktu)
     public void ResumeGame(GameObject panelYangMauTutup)
     {
         if (panelYangMauTutup != null)
@@ -86,6 +92,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // Coroutine khusus resume game
     private IEnumerator ProsesResumeGame(GameObject panelYangMauTutup)
     {
         yield return new WaitForSecondsRealtime(0.15f);
@@ -93,10 +100,11 @@ public class UIManager : MonoBehaviour
         if (panelYangMauTutup != null)
         {
             panelYangMauTutup.SetActive(false);
-            Time.timeScale = 1f; 
+            Time.timeScale = 1f; // Kembalikan kecepatan waktu game jadi normal
         }
     }
 
+    // Keluar dari aplikasi (hanya bekerja saat sudah dibuild)
     public void Quit()
     {
         Application.Quit();

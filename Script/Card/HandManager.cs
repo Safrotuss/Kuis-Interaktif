@@ -39,6 +39,7 @@ public class HandManager : MonoBehaviour
         StartCoroutine(DrawQuestionSequence(questionPrefabs));
     }
 
+    // Spawn kartu satu per satu ke tangan dengan sedikit delay berurutan
     private IEnumerator DrawQuestionSequence(List<GameObject> questionPrefabs)
     {
         if (spawnPoint == null) yield break;
@@ -71,6 +72,7 @@ public class HandManager : MonoBehaviour
         handCards.Clear();
     }
 
+    // meratakan posisi & rotasi semua kartu di tangan ngikutin garis Spline melengkung
     public void UpdateCardPositions()
     {
         if (handCards.Count == 0 || splineContainer == null) return;
@@ -89,8 +91,7 @@ public class HandManager : MonoBehaviour
             Vector3 worldPos = (Vector3)splineContainer.EvaluatePosition(p);
             Vector3 forward = (Vector3)splineContainer.EvaluateTangent(p);
             Vector3 up = (Vector3)splineContainer.EvaluateUpVector(p);
-            
-            // Atur kedalaman Z kartu agar sedikit di depan background
+   
             worldPos.z = -1f + (i * -0.05f);
 
             Quaternion worldRot = Quaternion.identity;
@@ -106,6 +107,7 @@ public class HandManager : MonoBehaviour
         }
     }
 
+    // Eksekusi efek data kartu (Damage/Heal) da dikirim ke QuizManager, lalu ilangin sisa kartu di tangan
     public void PlayCard(GameObject card)
     {
         if (card == null) return;
@@ -178,9 +180,7 @@ public class HandManager : MonoBehaviour
         handCards.Clear();
     }
 
-    // ====================================================================
-    // SUB-CLASS CARD HOVER
-    // ====================================================================
+    // Sub Class Card Hover
     public class CardHover : MonoBehaviour
     {
         public HandManager manager;
@@ -208,6 +208,7 @@ public class HandManager : MonoBehaviour
             if (canvasUI != null) sortingOrderAsli = canvasUI.sortingOrder;
         }
 
+        // Efek kartu membesar & naik ke depan saat di-hover kursor
         private void OnMouseEnter()
         {
             if (isDragging || isHovered || manager == null) return;
@@ -256,6 +257,7 @@ public class HandManager : MonoBehaviour
             transform.position = mousePos;
         }
 
+        // untuk cek saat lepas drag apakah kartu dilepas di area drop area atau balik ke tangan
         private void OnMouseUp()
         {
             isDragging = false;

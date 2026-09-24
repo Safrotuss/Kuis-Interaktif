@@ -57,6 +57,7 @@ public class Health : MonoBehaviour
         if (AttackSFX != null && sfxSource != null) sfxSource.PlayOneShot(AttackSFX);
     }
 
+   // Mengurangi HP, memperbarui HealthBar, spawn VFX kena pukul, dan nge-shake sprite via DOTween
     public void TakeDamage(int damage)
     {
         if (isDead) return;
@@ -77,6 +78,7 @@ public class Health : MonoBehaviour
         if (currentHp <= 0) Die();
     }
    
+    // Jeda delay sebelum nampilin panel game over melalui animasi Pop-Up (DOScale)
     private IEnumerator ShowSelectedGameOverPanel()
     {
         yield return new WaitForSeconds(2.0f);
@@ -88,6 +90,7 @@ public class Health : MonoBehaviour
         }
     }
 
+    // Nambahin HP karakter dan nge-clamp biar gak melewati maxHp
     public void Heal(int amount)
     {
         if (isDead) return;
@@ -96,6 +99,7 @@ public class Health : MonoBehaviour
         if (healthBar != null) healthBar.SetValue(currentHp, maxHp);
     }
 
+    // Saat HP habis UI Quiz dan movement dimatikan, dan panggil animasi mati
     private void Die()
     {
         if (isDead) return;

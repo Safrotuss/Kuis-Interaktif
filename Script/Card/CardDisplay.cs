@@ -2,6 +2,6 @@ using UnityEngine;
 
 public class CardDisplay : MonoBehaviour
 {
-    // Slot ini untuk menaruh data ScriptableObject nanti
+    // Menampung data kartu yang dipasang dari Inspector
     public CardData data; 
 }

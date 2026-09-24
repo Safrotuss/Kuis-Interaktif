@@ -26,9 +26,9 @@ public class QuizManager : MonoBehaviour
     public Image imageTeksSoal;
     
     [Header("Buttons")]
-    public Button buttonNext;      // Tombol sembunyikan/tutup panel soal
-    public Button buttonAmbil;     // Tombol ambil/tarik kartu
-    public Button buttonBukaSoal;  // Tombol buka kembali panel soal
+    public Button buttonNext;     
+    public Button buttonAmbil;  
+    public Button buttonBukaSoal; 
 
     [Header("Game Data")]
     public List<LevelSoal> daftarSoal = new List<LevelSoal>();
@@ -93,6 +93,7 @@ public class QuizManager : MonoBehaviour
         }
     }
 
+    // Menyiapkan dan menampilkan data soal baru berdasarkan index level
     public void LoadLevel(int index)
     {
         if (daftarSoal == null || index < 0 || index >= daftarSoal.Count)
@@ -198,6 +199,7 @@ public class QuizManager : MonoBehaviour
         }
     }
 
+    // informasi HandManager buat nge-spawn daftar kartu milik soal aktif saat ini
     public void KlikTombolAmbil()
     {
         if (handManager != null)
@@ -216,6 +218,7 @@ public class QuizManager : MonoBehaviour
         if (buttonAmbil != null) buttonAmbil.interactable = false;
     }
 
+    // deteksi apakah nama kartu yang dimaenin player cocok sama prefab kunci jawaban
     public void CekJawabanKartu(GameObject kartuYangDipilih)
     {
         if (kartuYangDipilih == null || isProcessing) return;
@@ -235,6 +238,7 @@ public class QuizManager : MonoBehaviour
         StartCoroutine(JalankanTransisiOtomatis(apakahBenar));
     }
 
+    // Urutan jeda Benar/Salah, ganti nomor soal berikutnya, atau lanjut panel win
     private IEnumerator JalankanTransisiOtomatis(bool apakahBenar)
     {
         yield return new WaitForSeconds(durasiAnimasiAttack);
@@ -300,6 +304,7 @@ public class QuizManager : MonoBehaviour
         }
     }
 
+    // Munculin UI menang
     private void MunculkanPanelKemenangan()
     {
         if (panelUtamaSoal != null) panelUtamaSoal.SetActive(false);

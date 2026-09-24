@@ -12,17 +12,16 @@ public class HealthBar : MonoBehaviour
 
     private float maxRightMask;
     private float initialRightMask;
-    private int maxHpBackup = 100; // Backup jika maxHp terlambat terbaca saat Start
+    private int maxHpBackup = 100;
 
     void Start()
     {
-        // Menggunakan GetDelayed (tunggu 1 frame) agar RectTransform terbaca sempurna
         StartCoroutine(InitializeBar());
     }
 
     IEnumerator InitializeBar()
     {
-        yield return null; // Tunggu sebentar agar UI render dulu
+        yield return null; 
         if (barRect != null && mask != null)
         {
             maxRightMask = barRect.rect.width;
@@ -30,8 +29,6 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    // Perbaikan Utama: Fungsi SetValue sekarang meminta 2 data (HP saat ini & HP Maksimal)
-    // Dengan cara ini, HealthBar tidak perlu mengemis data ke script Health lama lagi
     public void SetValue(int currentHp, int maxHp)
     {
         if (mask == null) return;
@@ -39,7 +36,6 @@ public class HealthBar : MonoBehaviour
         // Simpan nilai max HP ke backup agar teks tidak kosong saat inisialisasi awal
         maxHpBackup = maxHp;
 
-        // Cegah pembagian dengan angka 0 agar tidak terjadi error Crash/Infinity
         if (maxHp <= 0) maxHp = 100; 
 
         // Hitung rasio sisa darah saat ini
@@ -59,7 +55,6 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    // Fungsi overloads lama agar tidak memicu error kompilasi jika dipanggil dari script lain
     public void SetValue(int newValue)
     {
         SetValue(newValue, maxHpBackup);
